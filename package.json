@@ -4,20 +4,23 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "tsx watch --env-file=.env src/index.ts",
+    "gen-migration": "npx prisma migrate dev --name",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module",
+  "type": "commonjs",
   "dependencies": {
     "body-parser": "^2.2.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
-    "express": "^4.21.2",
-    "express-async-errors": "^3.1.1"
+    "express": "^4.21.2"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.5",
     "@types/node": "^24.10.0",
     "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
