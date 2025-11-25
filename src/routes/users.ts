@@ -1,24 +1,23 @@
 import express from 'express'
 import * as usersController from '../controllers/users'
 
-const api = express.Router()
+const router = express.Router()
 
-api.post('/', async (req, res) => {
+router.post('/', async (req, res) => {
     try {
         const user = await usersController.createUser(req.body)
-        console.log(req.body)
-        res.send(user).status(200)
+        res.status(200).json(user)
     } catch (error) {
         console.error('New user creation failed:', error)
         res.send('Failed to create new user record').status(500)
     }
 })
 
-api.get('/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
     const user = await usersController.fetchUser(req.params.id)
 
-    if (!user) res.send('User not found').status(404)
-    res.send(user).status(200)
+    if (!user) return res.json('User not found').status(404)
+    res.status(200).json(user)
 })
 
-export default api
+export default router
