@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "tsx watch --env-file=.env src/index.ts",
     "gen-migration": "npx prisma migrate dev --name",
-    "test": "vitest"
+    "test": "vitest --config ./vitest.config.ts"
   },
   "keywords": [],
   "author": "",
