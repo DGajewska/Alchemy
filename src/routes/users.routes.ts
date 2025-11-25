@@ -1,5 +1,5 @@
 import express from 'express'
-import * as usersController from '../controllers/users'
+import * as usersController from '../controllers/users.controller'
 
 const router = express.Router()
 
@@ -9,14 +9,14 @@ router.post('/', async (req, res) => {
         res.status(200).json(user)
     } catch (error) {
         console.error('New user creation failed:', error)
-        res.send('Failed to create new user record').status(500)
+        res.status(500).json({ message: 'Failed to create new user record' })
     }
 })
 
 router.get('/:id', async (req, res) => {
     const user = await usersController.fetchUser(req.params.id)
 
-    if (!user) return res.json('User not found').status(404)
+    if (!user) return res.status(404).json({ message: 'User not found' })
     res.status(200).json(user)
 })
 

@@ -1,5 +1,5 @@
 import { PrismaClient } from '../../generated/prisma/client'
-import { CreateUserData, UserResponse } from '../interfaces/user'
+import { CreateUserData, UserResponse } from '../types/user.types'
 
 const prisma = new PrismaClient({
             omit: {
