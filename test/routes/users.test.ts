@@ -38,24 +38,25 @@ describe("userRoutes", () => {
     })
 
     describe("GET /:id", () => {
-        it("fetches user record by ID, returns user data", () => {
-            return request(app)
-                .get("/api/v1/users/test-user-id")
-                .set("Accept", "application/json")
-                .expect("Content-Type", /json/)
-                .expect(200);
-        })
-
         /**
          * Add test back in after test helpers are created to 
          * create and delete test users
          */
-        // it("returns 404 if user not found", () => {
+        // it("fetches user record by ID, returns user data", () => {
         //     return request(app)
-        //         .get("/api/v1/users/incorrect-id")
+        //         .get("/api/v1/users/test-user-id")
         //         .set("Accept", "application/json")
-        //         // .expect("Content-Type", /json/)
-        //         .expect(404);
+        //         .expect("Content-Type", /json/)
+        //         .expect(200);
         // })
+
+
+        it("returns 404 if user not found", () => {
+            return request(app)
+                .get("/api/v1/users/incorrect-id")
+                .set("Accept", "application/json")
+                .expect("Content-Type", /json/) 
+                .expect(404);
+        })
     })
 })
