@@ -1,10 +1,8 @@
 import request from 'supertest'
-import { describe, expect, it, vi } from 'vitest'
+import { afterAll, afterEach, describe, expect, it, vi } from 'vitest'
 
 import app from '../../src'
-
-// remove after test helpers have been created to clear test data
-const randomNumber = (max: number):number => Math.floor(Math.random() * max);
+import { createTestUser, deleteTestUser, deleteTestUsers, generateTestEmail } from '../helpers/users';
 
 const password = 'Mclaren4life!'
 const userInputData = {
@@ -16,9 +14,23 @@ const userInputData = {
 const todaysDate = new Date().toISOString().split("T")[0]
 
 describe("userRoutes", () => {
-    describe("POST /", () => {
+    afterAll(async () => {
+        await deleteTestUsers()
+    })
+
+    describe("POST /", async () => {
+        let userId: string;
+
+        /**
+         * TODO: TestDB
+         * This is in place to keep the DB clean while operating with only one DB
+         */
+        afterEach(async () => {
+            await deleteTestUser(userId)
+        })
+
         it("creates new user and returns data, not including password", () => {
-            const email = `lando${randomNumber(100)}@ln4.com`;
+            const email = generateTestEmail('lando')
 
             return request(app)
                 .post("/api/v1/users")
@@ -26,6 +38,8 @@ describe("userRoutes", () => {
                 .expect("Content-Type", /json/)
                 .expect(200)
                 .then((response) => {
+                    userId = response.body.id;
+
                     expect(response.body.id).toBeTypeOf('string')
                     expect(response.body.firstName).toBe(userInputData.firstName)
                     expect(response.body.lastName).toBe(userInputData.lastName)
@@ -37,18 +51,15 @@ describe("userRoutes", () => {
         })
     })
 
-    describe("GET /:id", () => {
-        /**
-         * Add test back in after test helpers are created to 
-         * create and delete test users
-         */
-        // it("fetches user record by ID, returns user data", () => {
-        //     return request(app)
-        //         .get("/api/v1/users/test-user-id")
-        //         .set("Accept", "application/json")
-        //         .expect("Content-Type", /json/)
-        //         .expect(200);
-        // })
+    describe("GET /:id", async  () => {
+        it("fetches user record by ID, returns user data", async () => {
+            const { id } = await createTestUser()
+            return request(app)
+                .get(`/api/v1/users/${id}`)
+                .set("Accept", "application/json")
+                .expect("Content-Type", /json/)
+                .expect(200);
+        })
 
 
         it("returns 404 if user not found", () => {
