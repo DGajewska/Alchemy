@@ -2,7 +2,7 @@ import request from 'supertest'
 import { afterAll, afterEach, describe, expect, it, vi } from 'vitest'
 
 import app from '../../src'
-import { createTestUser, deleteTestUser, deleteTestUsers, generateTestEmail } from '../helpers/users';
+import { createTestUser, deleteTestUser, deleteTestUsers, generateTestEmail } from '../helpers/user';
 
 const password = 'Mclaren4life!'
 const userInputData = {
