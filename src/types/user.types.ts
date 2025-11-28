@@ -1,16 +1,10 @@
-type UserData = {
-    firstName: string;
-    lastName: string;
-    aka: string | null;
-    email: string;
-}
-
-export type CreateUserData = UserData & { password: string; }
-
 export type UserResponse = 
-    UserData & 
     { 
         id: string; 
+        firstName: string;
+        lastName: string;
+        aka: string | null;
+        email: string;
         createdAt: Date;
         updatedAt: Date;
     }
