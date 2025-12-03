@@ -1,3 +1,11 @@
+export type CreateUserData = {
+    firstName: string;
+    lastName: string;
+    aka: string | null;
+    email: string;
+    password: string;
+}
+
 export type UserResponse = 
     { 
         id: string; 

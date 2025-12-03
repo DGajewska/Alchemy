@@ -1,14 +1,17 @@
-import { Prisma } from '../../generated/prisma/client'
 import { prisma } from '../prisma'
-import { PractitionerResponse } from '../types/practitioner.types'
+import { CreatePractitionerData, PractitionerResponse } from '../types/practitioner.types'
 
 
-export const createPractitioner = async (practitionerData: Prisma.PractitionerCreateInput): Promise<PractitionerResponse | Error> => {
+export const createPractitioner = async (practitionerData: CreatePractitionerData): Promise<PractitionerResponse | Error> => {
     return await prisma.practitioner.create({
         data: {
             description: practitionerData.description,
-            user: practitionerData.user,
             socialMedia: practitionerData.socialMedia,
+            user: {
+                connect: { 
+                    id: practitionerData.userId 
+                }
+            },  
         },
     })
 }

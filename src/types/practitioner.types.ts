@@ -1,4 +1,14 @@
-import { JsonValue } from "@prisma/client/runtime/library";
+import { InputJsonValue, JsonValue } from "@prisma/client/runtime/library";
+
+type SocialMediaJson = {
+    string: string;
+}
+
+export type CreatePractitionerData = {
+    description: string;
+    userId: string;
+    socialMedia?: SocialMediaJson | undefined;
+}
 
 export type PractitionerResponse =
     {

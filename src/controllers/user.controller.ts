@@ -1,16 +1,9 @@
-import { Prisma } from '../../generated/prisma/client'
 import { prisma } from '../prisma'
-import { UserResponse } from '../types/user.types'
+import { CreateUserData, UserResponse } from '../types/user.types'
 
-export const createUser = async (userData: Prisma.UserCreateInput): Promise<UserResponse | Error> => {
+export const createUser = async (userData: CreateUserData): Promise<UserResponse | Error> => {
     return await prisma.user.create({
-        data: {
-            firstName: userData.firstName,
-            lastName: userData.lastName,
-            aka: userData.aka,
-            email: userData.email,
-            password: userData.password,
-        },
+        data: userData,
     })
 }
 
@@ -19,6 +12,9 @@ export const fetchUser = async (id: string): Promise<UserResponse | null> => {
         where: {
             id,
         },
+        include: {
+            practitioner: true
+        }
     })
 }
 
