@@ -52,10 +52,10 @@ Table businesses {
   contact_id varchar [not null]
 }
 
-Table practitioners_businesses {
+Table services_businesses {
   id varchar [pk]
   business_id varchar [not null]
-  practitioner_id varchar [not null]
+  service_id varchar [not null]
 }
 
 Ref: practitioners.user_id - users.id
@@ -71,5 +71,5 @@ Ref: reviews.practitioner_id > practitioners.id
 Ref: reviews.service_id > services.id
 Ref: reviews.business_id > businesses.id
 
-Ref: practitioners_businesses.practitioner_id > practitioners.id
-Ref: practitioners_businesses.business_id > businesses.id
+Ref: services_businesses.service_id > services.id
+Ref: services_businesses.business_id > businesses.id
