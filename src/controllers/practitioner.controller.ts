@@ -1,31 +1,38 @@
+import { Request, Response } from 'express'
 import { prisma } from '../prisma'
-import {
-  CreatePractitionerData,
-  PractitionerResponse,
-} from '../types/practitioner.types'
 
-export const createPractitioner = async (
-  practitionerData: CreatePractitionerData
-): Promise<PractitionerResponse | Error> => {
-  return await prisma.practitioner.create({
-    data: {
-      description: practitionerData.description,
-      socialMedia: practitionerData.socialMedia,
-      user: {
-        connect: {
-          id: practitionerData.userId,
+export const createPractitioner = async (req: Request, res: Response) => {
+  try {
+    const { description, socialMedia } = req.body
+    const practitioner = await await prisma.practitioner.create({
+      data: {
+        description,
+        socialMedia,
+        user: {
+          connect: {
+            id: req.params.id,
+          },
         },
       },
-    },
-  })
+    })
+    res.status(200).json(practitioner)
+  } catch (error) {
+    console.error('New practitioner creation failed:', error)
+    res
+      .status(500)
+      .json({ message: 'Failed to create new practitioner record' })
+  }
+  return
 }
 
-export const fetchPractitioner = async (
-  id: string
-): Promise<PractitionerResponse | null> => {
-  return await prisma.practitioner.findUnique({
+export const fetchPractitioner = async (req: Request, res: Response) => {
+  const practitioner = await prisma.practitioner.findUnique({
     where: {
-      id,
+      id: req.params.id,
     },
   })
+
+  if (!practitioner)
+    return res.status(404).json({ message: 'Practitioner not found' })
+  res.status(200).json(practitioner)
 }

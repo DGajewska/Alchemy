@@ -24,21 +24,18 @@ describe('practitionerRoutes', () => {
     it('creates new practitioner and returns data', async () => {
       const user = await createTestUser({ email: generateTestEmail('lando2') })
 
-      const practitionerData = {
-        ...testPractitionerData,
-        userId: user.id,
-      }
-
       return request(app)
-        .post('/api/v1/practitioners')
-        .send(practitionerData)
+        .post(`/api/v1/practitioners/user/${user.id}`)
+        .send(testPractitionerData)
         .expect('Content-Type', /json/)
         .expect(200)
         .then((response) => {
           expect(response.body.id).toBeTypeOf('string')
-          expect(response.body.description).toBe(practitionerData.description)
+          expect(response.body.description).toBe(
+            testPractitionerData.description
+          )
           expect(response.body.socialMedia.instagram).toBe(
-            practitionerData.socialMedia.instagram
+            testPractitionerData.socialMedia.instagram
           )
           expect(response.body.userId).toBe(user.id)
           expect(response.body.createdAt).toContain(todaysDate)
@@ -65,7 +62,7 @@ describe('practitionerRoutes', () => {
 
     it('returns 404 if user not found', () => {
       return request(app)
-        .get('/api/v1/practitioners/incorrect-id')
+        .get('/api/v1/practitioners/770f537d-3ac5-485c-9ba4-d4e3152b91ee')
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
         .expect(404)
