@@ -7,6 +7,9 @@
     "dev": "tsx watch --env-file=.env src/server.ts",
     "gen-migration": "npx prisma migrate dev --name",
     "test": "vitest --config ./vitest.config.mts",
+    "lint": "npx eslint .",
+    "lint-fix": "npx eslint . --fix",
+    "prettier": "npx prettier --write .",
     "postinstall": "prisma generate"
   },
   "keywords": [],
@@ -20,12 +23,14 @@
     "express": "^4.21.2"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.1",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.5",
     "@types/node": "^24.10.0",
     "@types/supertest": "^6.0.3",
     "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
+    "globals": "^16.5.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.6",
     "nodemon": "^3.1.10",
@@ -34,6 +39,7 @@
     "supertest": "^7.1.4",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3",
+    "typescript-eslint": "^8.48.1",
     "vitest": "^4.0.12"
   },
   "husky": {

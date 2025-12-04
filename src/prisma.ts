@@ -1,10 +1,9 @@
-import { PrismaClient } from '../generated/prisma/client';
-
+import { PrismaClient } from '../generated/prisma/client'
 
 export const prisma = new PrismaClient({
-            omit: {
-                user: {
-                    password: true
-                }
-            }
-        })
+  omit: {
+    user: {
+      password: true,
+    },
+  },
+})
