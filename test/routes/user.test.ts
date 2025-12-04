@@ -1,5 +1,5 @@
 import request from 'supertest'
-import { afterAll, afterEach, describe, expect, it, vi } from 'vitest'
+import { afterAll, afterEach, describe, expect, it } from 'vitest'
 
 import app from '../../src'
 import { createTestUser, deleteTestUser, deleteTestUsers, generateTestEmail } from '../helpers/user';
@@ -58,7 +58,10 @@ describe("userRoutes", () => {
                 .get(`/api/v1/users/${id}`)
                 .set("Accept", "application/json")
                 .expect("Content-Type", /json/)
-                .expect(200);
+                .expect(200)
+                .then((response) => {
+                    expect(response.body.id).toBe(id)
+                });
         })
 
 

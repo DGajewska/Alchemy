@@ -3,34 +3,29 @@ import { CreateUserData, UserResponse } from '../../src/types/user.types'
 
 const createdUsers: string[] = []
 
-const testUserData = {
+const randomNumber = (max: number): number => Math.floor(Math.random() * max);
+
+export const generateTestEmail = (firstName: string) => `${firstName}${randomNumber(100)}@example.com`;
+
+export const testUserData = {
     firstName: 'Lando',
     lastName: 'Norris',
     aka: 'LN4',
     password: 'Mclaren4life!'
 }
 
-const randomNumber = (max: number): number => Math.floor(Math.random() * max);
 
-export const generateTestEmail = (firstName: string) => `${firstName}${randomNumber(100)}@example.com`;
-
-export const createTestUser = async (overrides?: CreateUserData): Promise<UserResponse> => {
-    const userData = { 
-        ...testUserData, 
-        email: generateTestEmail('lando'),
-        ...overrides
-    }
-
+export const createTestUser = async (overrides?: Partial<CreateUserData>): Promise<UserResponse> => {
     const testUser = await prisma.user.create({
         data: {
-            firstName: userData.firstName,
-            lastName: userData.lastName,
-            aka: userData.aka,
-            email: userData.email,
-            password: userData.password,
-        },
+            email: generateTestEmail('lando'),
+            ...testUserData,
+            ...overrides
+        }
     })
+
     if ('firstName' in testUser) {
+        createdUsers.push(testUser.id)
         return testUser;
     }
 
@@ -43,8 +38,17 @@ export const deleteTestUser = async (userId: string): Promise<void> => {
     })
 }
 
-export const deleteTestUsers = async (): Promise<void> => {
-    await prisma.user.deleteMany({
-        where: { id: { in: createdUsers }, },
-    })
-}
+const deletePractitioners = prisma.practitioner.deleteMany({
+    where: {
+        userId: { in: createdUsers },
+    },
+})
+
+const deleteUsers = prisma.user.deleteMany({
+    where: {
+        id: { in: createdUsers },
+    },
+})
+
+export const deleteTestUsers = async () => 
+    await prisma.$transaction([deletePractitioners, deleteUsers])
