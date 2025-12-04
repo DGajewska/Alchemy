@@ -71,7 +71,7 @@ describe('userRoutes', () => {
 
     it('returns 404 if user not found', () => {
       return request(app)
-        .get('/api/v1/users/incorrect-id')
+        .get('/api/v1/users/770f537d-3ac5-485c-9ba4-d4e3152b91ee')
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
         .expect(404)
