@@ -3,16 +3,21 @@ import { prisma } from '../prisma'
 
 export const createPractitioner = async (req: Request, res: Response) => {
   try {
-    const { description, socialMedia } = req.body
+    const { description, name, contact: contactData } = req.body
     const practitioner = await await prisma.practitioner.create({
       data: {
+        name,
         description,
-        socialMedia,
         user: {
           connect: {
             id: req.params.id,
           },
         },
+        contact: {
+          create: {
+            ...contactData
+          }
+        }
       },
     })
     res.status(200).json(practitioner)

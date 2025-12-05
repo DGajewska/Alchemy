@@ -34,10 +34,8 @@ describe('practitionerRoutes', () => {
           expect(response.body.description).toBe(
             testPractitionerData.description
           )
-          expect(response.body.socialMedia.instagram).toBe(
-            testPractitionerData.socialMedia.instagram
-          )
           expect(response.body.userId).toBe(user.id)
+          expect(response.body.contactId).toBeTypeOf('string')
           expect(response.body.createdAt).toContain(todaysDate)
           expect(response.body.updatedAt).toContain(todaysDate)
         })

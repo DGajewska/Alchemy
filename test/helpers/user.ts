@@ -1,5 +1,4 @@
 import { prisma } from '../../src/prisma'
-import { CreateUserData, UserResponse } from '../../src/types/user.types'
 
 const createdUsers: string[] = []
 
@@ -11,13 +10,12 @@ export const generateTestEmail = (firstName: string) =>
 export const testUserData = {
   firstName: 'Lando',
   lastName: 'Norris',
-  aka: 'LN4',
   password: 'Mclaren4life!',
 }
 
 export const createTestUser = async (
-  overrides?: Partial<CreateUserData>
-): Promise<UserResponse> => {
+  overrides = {}
+) => {
   const testUser = await prisma.user.create({
     data: {
       email: generateTestEmail('lando'),
