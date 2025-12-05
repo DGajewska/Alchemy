@@ -1,12 +1,8 @@
 import { z } from 'zod'
+import { contactSchema } from './contact.schema'
 
 export const createPractitionerSchema = z.object({
+  name: z.string().trim().nullable(),
   description: z.string().trim().min(5),
-  socialMedia: z
-    .object({
-      instagram: z.string().nullish(),
-      facebook: z.string().nullish(),
-      x: z.string().nullish(),
-    })
-    .nullish(),
+  contact: contactSchema
 })
