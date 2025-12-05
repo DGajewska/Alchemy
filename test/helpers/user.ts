@@ -13,9 +13,7 @@ export const testUserData = {
   password: 'Mclaren4life!',
 }
 
-export const createTestUser = async (
-  overrides = {}
-) => {
+export const createTestUser = async (overrides = {}) => {
   const testUser = await prisma.user.create({
     data: {
       email: generateTestEmail('lando'),
@@ -38,6 +36,22 @@ export const deleteTestUser = async (userId: string): Promise<void> => {
   })
 }
 
+const deleteContacts = prisma.contact.deleteMany({
+  where: {
+    practitioner: {
+      userId: { in: createdUsers },
+    }
+  },
+})
+
+const deleteServices = prisma.service.deleteMany({
+  where: {
+    practitioner: {
+      userId: { in: createdUsers },
+    }
+  },
+})
+
 const deletePractitioners = prisma.practitioner.deleteMany({
   where: {
     userId: { in: createdUsers },
@@ -51,4 +65,4 @@ const deleteUsers = prisma.user.deleteMany({
 })
 
 export const deleteTestUsers = async () =>
-  await prisma.$transaction([deletePractitioners, deleteUsers])
+  await prisma.$transaction([deleteServices, deleteContacts, deletePractitioners, deleteUsers])

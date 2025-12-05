@@ -10,13 +10,24 @@ export const testPractitionerData = {
     socialMedia: {
       instagram: 'http://instagram.com/ln4',
     },
-  }
+  },
+  services: [
+    {
+      name: 'Hot laps',
+      description:
+        "Get in the driver's seat and experience the thrill of a race lap around the track",
+      online: false,
+      inPerson: true,
+    },
+  ],
 }
 
-export const createPractitioner = async (
-  userId: string
-) => {
-  const { contact, ...practitionerData } = testPractitionerData
+export const createPractitioner = async (userId: string) => {
+  const {
+    contact: contactData,
+    services: servicesData,
+    ...practitionerData
+  } = testPractitionerData
   const testPractitioner = await prisma.practitioner.create({
     data: {
       ...practitionerData,
@@ -27,9 +38,12 @@ export const createPractitioner = async (
       },
       contact: {
         create: {
-          ...contact
-        }
-      }
+          ...contactData,
+        },
+      },
+      services: {
+        create: servicesData,
+      },
     },
   })
 
