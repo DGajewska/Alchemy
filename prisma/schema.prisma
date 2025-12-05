@@ -15,48 +15,80 @@ datasource db {
 }
 
 model User {
-  id                String            @id @default(uuid())
-  firstName         String
-  lastName          String
-  email             String            @unique
-  password          String
-  practitioner      Practitioner?
-  createdAt         DateTime          @default(now())
-  updatedAt         DateTime          @default(now())
+  id                  String                  @id @default(uuid())
+  firstName           String
+  lastName            String
+  email               String                  @unique
+  password            String
+  practitioner        Practitioner?
+  business            Business[]
+  createdAt           DateTime                @default(now())
+  updatedAt           DateTime                @default(now())
 }
 
 model Practitioner {
-  id                String            @id @default(uuid())
-  name              String?
-  description       String
-  user              User              @relation(fields: [userId], references: [id])
-  userId            String            @unique
-  contact           Contact?          @relation(fields: [contactId], references: [id])
-  contactId         String?           @unique
-  services          Service[]
-  createdAt         DateTime          @default(now())
-  updatedAt         DateTime          @default(now())
+  id                  String                  @id @default(uuid())
+  name                String?
+  description         String
+  user                User                    @relation(fields: [userId], references: [id])
+  userId              String                  @unique
+  contact             Contact?                @relation(fields: [contactId], references: [id])
+  contactId           String?                 @unique
+  services            Service[]
+  createdAt           DateTime                @default(now())
+  updatedAt           DateTime                @default(now())
 }
 
 model Contact {
-  id                String            @id @default(uuid())
-  phoneNumber       String?
-  email             String?
-  website           String?
-  socialMedia       Json?
-  practitioner      Practitioner?
-  createdAt         DateTime          @default(now())
-  updatedAt         DateTime          @default(now())
+  id                  String                  @id @default(uuid())
+  phoneNumber         String?
+  email               String?
+  website             String?
+  socialMedia         Json?
+  practitioner        Practitioner?
+  business            Business?
+  createdAt           DateTime                @default(now())
+  updatedAt           DateTime                @default(now())
 }
 
 model Service {
-  id                String            @id @default(uuid())
-  name              String
-  description       String
-  practitioner      Practitioner      @relation(fields: [practitionerId], references: [id])
-  practitionerId    String
-  online            Boolean
-  inPerson          Boolean
-  createdAt         DateTime          @default(now())
-  updatedAt         DateTime          @default(now())
+  id                  String                  @id @default(uuid())
+  name                String
+  description         String
+  practitioner        Practitioner            @relation(fields: [practitionerId], references: [id])
+  practitionerId      String
+  online              Boolean
+  inPerson            Boolean
+  servicesAtBusiness  ServicesAtBusiness[]
+  createdAt           DateTime                @default(now())
+  updatedAt           DateTime                @default(now())
+}
+
+model Business {
+  id                  String                  @id @default(uuid())
+  name                String
+  description         String
+  user                User                    @relation(fields: [ownerUserId], references: [id])
+  ownerUserId         String
+  addressLine1        String
+  addressLine2        String?
+  city                String
+  region              String
+  postalCode          String
+  country             String
+  contact             Contact                 @relation(fields: [contactId], references: [id])
+  contactId           String                  @unique
+  servicesAtBusiness  ServicesAtBusiness[]
+  createdAt           DateTime                @default(now())
+  updatedAt           DateTime                @default(now())
+}
+
+model ServicesAtBusiness {
+  id                  String                  @id @default(uuid())
+  service             Service                 @relation(fields: [serviceId], references: [id])
+  serviceId           String  
+  business            Business                @relation(fields: [businessId], references: [id])
+  businessId          String
+  createdAt           DateTime                @default(now())
+  updatedAt           DateTime                @default(now())
 }
