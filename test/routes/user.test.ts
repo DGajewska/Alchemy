@@ -4,16 +4,15 @@ import { afterAll, afterEach, describe, expect, it } from 'vitest'
 import app from '../../src'
 import {
   createTestUser,
-  deleteTestUser,
   deleteTestUsers,
-  generateTestEmail,
-} from '../helpers/user'
+  deleteTestUserWithRelations,
+} from '../helpers/test-queries'
+import { generateTestEmail } from '../helpers/test-data'
 
 const password = 'Mclaren4life!'
 const userInputData = {
   firstName: 'Lando',
   lastName: 'Norris',
-  aka: 'LN4',
 }
 // date portion of ISO string
 const todaysDate = new Date().toISOString().split('T')[0]
@@ -31,7 +30,7 @@ describe('userRoutes', () => {
      * This is in place to keep the DB clean while operating with only one DB
      */
     afterEach(async () => {
-      await deleteTestUser(userId)
+      await deleteTestUserWithRelations({ userId })
     })
 
     it('creates new user and returns data, not including password', () => {

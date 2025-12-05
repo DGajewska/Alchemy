@@ -1,16 +1,14 @@
 import request from 'supertest'
-import { afterAll, describe, expect, it } from 'vitest'
+import { afterAll, afterEach, describe, expect, it } from 'vitest'
 
 import app from '../../src'
 import {
+  createTestPractitioner,
   createTestUser,
+  deleteTestUserWithRelations,
   deleteTestUsers,
-  generateTestEmail,
-} from '../helpers/user'
-import {
-  createPractitioner,
-  testPractitionerData,
-} from '../helpers/practitioner'
+} from '../helpers/test-queries'
+import { generateTestEmail, testPractitionerData } from '../helpers/test-data'
 
 // date portion of ISO string
 const todaysDate = new Date().toISOString().split('T')[0]
@@ -21,8 +19,21 @@ describe('practitionerRoutes', () => {
   })
 
   describe('POST /', async () => {
+    let userId: string
+    let practitionerId: string
+    let contactId: string
+
+    /**
+     * TODO: TestDB
+     * This is in place to keep the DB clean while operating with only one DB
+     */
+    afterEach(async () => {
+      await deleteTestUserWithRelations({ userId, practitionerId, contactId })
+    })
+
     it('creates new practitioner and returns data', async () => {
       const user = await createTestUser({ email: generateTestEmail('lando2') })
+      userId = user.id
 
       return request(app)
         .post(`/api/v1/practitioners/user/${user.id}`)
@@ -30,6 +41,9 @@ describe('practitionerRoutes', () => {
         .expect('Content-Type', /json/)
         .expect(200)
         .then((response) => {
+          practitionerId = response.body.id
+          contactId = response.body.contactId
+
           expect(response.body.id).toBeTypeOf('string')
           expect(response.body.description).toBe(
             testPractitionerData.description
@@ -45,7 +59,7 @@ describe('practitionerRoutes', () => {
   describe('GET /:id', async () => {
     it('fetches practitioner record by ID, returns user data', async () => {
       const { id: userId } = await createTestUser()
-      const { id } = await createPractitioner(userId)
+      const { id } = await createTestPractitioner(userId)
 
       return request(app)
         .get(`/api/v1/practitioners/${id}`)
