@@ -68,7 +68,7 @@ Ref: practitioners.contact_id - contacts.id
 
 Ref: services.practitioner_id > practitioners.id
 
-Ref: businesses.owner_user_id - users.id
+Ref: businesses.owner_user_id > users.id
 Ref: businesses.contact_id - contacts.id
 
 Ref: reviews.reviewing_user_id > users.id
