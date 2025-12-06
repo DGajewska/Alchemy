@@ -30,3 +30,19 @@ export const testPractitionerData = {
     },
   ],
 }
+
+export const testBusinessData = {
+  name: 'LN4 Inc',
+  description: 'Parent company of Quadrant and all LN4 enterprises',
+  addressLine1: '123 Test Lane',
+  addressLine2: null,
+  city: 'Glastonbury',
+  region: 'Somerset',
+  postalCode: 'GL12 5TL',
+  country: 'United Kingdom',
+  contact: {
+    phoneNumber: '+44 60847275',
+    website: null,
+    email: null,
+  }
+}

@@ -1,6 +1,7 @@
 import { prisma } from '../../src/prisma'
 import {
   generateTestEmail,
+  testBusinessData,
   testPractitionerData,
   testUserData,
 } from './test-data'
@@ -57,14 +58,50 @@ export const createTestPractitioner = async (userId: string) => {
     return testPractitioner
   }
 
-  throw Error('Failed to create test user', testPractitioner)
+  throw Error('Failed to create test practitioner', testPractitioner)
+}
+
+export const createTestBusiness = async (userId: string) => {
+  const {
+    contact: contactData,
+    ...businessData
+  } = testBusinessData
+  const testBusiness = await prisma.business.create({
+    data: {
+      ...businessData,
+      user: {
+        connect: {
+          id: userId,
+        },
+      },
+      contact: {
+        create: {
+          ...contactData,
+        },
+      },
+    },
+  })
+
+  if ('description' in testBusiness) {
+    createdContacts.push(testBusiness.contactId!)
+    return testBusiness
+  }
+
+  throw Error('Failed to create test business', testBusiness)
 }
 
 export const deleteTestUserWithRelations = async ({
   userId,
   practitionerId,
+  businessId,
   contactId,
 }: Record<string, string>): Promise<void> => {
+  if (businessId) {
+    await prisma.business.delete({
+       where: { id: businessId },
+    })
+  }
+  
   if (contactId) {
     await prisma.contact.delete({
       where: { id: contactId },
@@ -86,15 +123,21 @@ export const deleteTestUserWithRelations = async ({
   })
 }
 
-const deleteContacts = prisma.contact.deleteMany({
+const deleteBusinesses = prisma.business.deleteMany({
   where: {
-    id: { in: createdContacts },
+    ownerUserId: { in: createdUsers },
   },
 })
 
 const deleteServices = prisma.service.deleteMany({
   where: {
     practitionerId: { in: createdPractitioners },
+  },
+})
+
+const deleteContacts = prisma.contact.deleteMany({
+  where: {
+    id: { in: createdContacts },
   },
 })
 
@@ -112,6 +155,7 @@ const deleteUsers = prisma.user.deleteMany({
 
 export const deleteTestUsers = async () =>
   await prisma.$transaction([
+    deleteBusinesses,
     deleteServices,
     deleteContacts,
     deletePractitioners,
