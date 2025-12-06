@@ -24,7 +24,7 @@ export const contactSchema = z
       .nullable(),
     email: z.email().trim().nullable(),
     website: z.url().trim().nullable(),
-    socialMedia: socialMediaSchema.nullable(),
+    socialMedia: socialMediaSchema.optional(),
   })
   .superRefine(({ phoneNumber, email, website, socialMedia }, ctx) => {
     // Check if there is at least one contact field submitted
