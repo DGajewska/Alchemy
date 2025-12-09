@@ -4,6 +4,7 @@ import { afterAll, afterEach, describe, expect, it } from 'vitest'
 import app from '../../src'
 import {
   createTestBusiness,
+  createTestPractitioner,
   createTestUser,
   deleteTestUserWithRelations,
   deleteTestUsers,
@@ -23,10 +24,6 @@ describe('businessRoutes', () => {
     let businessId: string
     let contactId: string
 
-    /**
-     * TODO: TestDB
-     * This is in place to keep the DB clean while operating with only one DB
-     */
     afterEach(async () => {
       await deleteTestUserWithRelations({ userId, businessId, contactId })
     })
@@ -39,19 +36,53 @@ describe('businessRoutes', () => {
         .post(`/api/v1/businesses/user/${user.id}`)
         .send(testBusinessData)
         .expect('Content-Type', /json/)
-        // .expect(200)
+        .expect(200)
         .then((response) => {
           businessId = response.body.id
           contactId = response.body.contactId
 
           expect(response.body.id).toBeTypeOf('string')
-          expect(response.body.description).toBe(
-            testBusinessData.description
-          )
+          expect(response.body.description).toBe(testBusinessData.description)
           expect(response.body.ownerUserId).toBe(user.id)
           expect(response.body.contactId).toBeTypeOf('string')
           expect(response.body.createdAt).toContain(todaysDate)
           expect(response.body.updatedAt).toContain(todaysDate)
+        })
+    })
+  })
+
+  describe('POST /:id/add-services', async () => {
+    let userId: string
+    let practitionerId: string
+    let businessId: string
+    let contactId: string
+
+    afterEach(async () => {
+      await deleteTestUserWithRelations({
+        userId,
+        practitionerId,
+        businessId,
+      })
+    })
+
+    it('adds services to business', async () => {
+      const user = await createTestUser({
+        email: generateTestEmail('lando3'),
+      })
+      userId = user.id
+      const practitioner = await createTestPractitioner(userId)
+      practitionerId = practitioner.id
+      const business = await createTestBusiness(userId)
+      businessId = business.id
+      const serviceIdToConnect = practitioner.services[0].id
+
+      return request(app)
+        .post(`/api/v1/businesses/${businessId}/add-services`)
+        .send({ services: [{ id: serviceIdToConnect, tuesday: true }] })
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .then((response) => {
+          expect(response.body.count).toBe(1)
         })
     })
   })

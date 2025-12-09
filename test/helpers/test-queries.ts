@@ -50,6 +50,9 @@ export const createTestPractitioner = async (userId: string) => {
         create: servicesData,
       },
     },
+    include: {
+      services: true,
+    },
   })
 
   if ('description' in testPractitioner) {
@@ -62,10 +65,7 @@ export const createTestPractitioner = async (userId: string) => {
 }
 
 export const createTestBusiness = async (userId: string) => {
-  const {
-    contact: contactData,
-    ...businessData
-  } = testBusinessData
+  const { contact: contactData, ...businessData } = testBusinessData
   const testBusiness = await prisma.business.create({
     data: {
       ...businessData,
@@ -97,11 +97,14 @@ export const deleteTestUserWithRelations = async ({
   contactId,
 }: Record<string, string>): Promise<void> => {
   if (businessId) {
+    await prisma.servicesAtBusiness.deleteMany({
+      where: { businessId },
+    })
     await prisma.business.delete({
-       where: { id: businessId },
+      where: { id: businessId },
     })
   }
-  
+
   if (contactId) {
     await prisma.contact.delete({
       where: { id: contactId },

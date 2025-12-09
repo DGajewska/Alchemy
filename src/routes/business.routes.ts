@@ -5,6 +5,7 @@ import {
   validateIdParam,
 } from '../middleware/validation.middleware'
 import { createBusinessSchema } from '../schemas/business.schema'
+import { servicesAtBusinessSchema } from '../schemas/servicesAtBusiness.schema'
 
 const router = express.Router()
 
@@ -13,6 +14,13 @@ router.post(
   validateData(createBusinessSchema),
   validateIdParam(),
   businessController.createBusiness
+)
+
+router.post(
+  '/:id/add-services',
+  validateData(servicesAtBusinessSchema),
+  validateIdParam(),
+  businessController.addServicesToBusiness
 )
 
 router.get('/:id', validateIdParam(), businessController.fetchBusiness)

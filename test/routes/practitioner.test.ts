@@ -69,6 +69,7 @@ describe('practitionerRoutes', () => {
         .then((response) => {
           expect(response.body.id).toBe(id)
           expect(response.body.userId).toBe(userId)
+          expect(response.body.services[0].id).toBeTypeOf('string')
         })
     })
 
