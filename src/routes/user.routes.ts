@@ -5,10 +5,16 @@ import {
   validateIdParam,
 } from '../middleware/validation.middleware'
 import { createUserSchema } from '../schemas/user.schemas'
+import { encryptPassword } from '../middleware/encryption.middleware'
 
 const router = express.Router()
 
-router.post('/', validateData(createUserSchema), userController.createUser)
+router.post(
+  '/',
+  validateData(createUserSchema),
+  encryptPassword(),
+  userController.createUser
+)
 
 router.get('/:id', validateIdParam(), userController.fetchUser)
 

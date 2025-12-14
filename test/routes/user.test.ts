@@ -51,7 +51,7 @@ describe('userRoutes', () => {
           expect(response.body.createdAt).toContain(todaysDate)
           expect(response.body.updatedAt).toContain(todaysDate)
         })
-    })
+    }, 10000) // requires longer timeout for password encryption
   })
 
   describe('GET /:id', async () => {
