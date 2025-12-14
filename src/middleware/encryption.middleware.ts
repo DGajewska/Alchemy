@@ -1,4 +1,4 @@
-import * as bcrypt from 'bcrypt'
+import bcrypt from 'bcrypt'
 import { Request, Response, NextFunction } from 'express'
 
 export const encryptPassword = () => {

@@ -1,5 +1,5 @@
 import request from 'supertest'
-import { afterAll, afterEach, describe, expect, it } from 'vitest'
+import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest'
 
 import app from '../../src'
 import {
@@ -51,7 +51,59 @@ describe('userRoutes', () => {
           expect(response.body.createdAt).toContain(todaysDate)
           expect(response.body.updatedAt).toContain(todaysDate)
         })
-    }, 10000) // requires longer timeout for password encryption
+    })
+  })
+
+  describe('POST /validate-credentials', async () => {
+    let email: string
+    let userId: string
+
+    beforeAll(async () => {
+      email = generateTestEmail('lando')
+
+      return request(app)
+        .post('/api/v1/users')
+        .send({ ...userInputData, email, password })
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .then((response) => {
+          userId = response.body.id
+        })
+    })
+
+    afterAll(async () => {
+      await deleteTestUserWithRelations({ userId })
+    })
+
+    it('logs user in', () => {
+      return request(app)
+        .post('/api/v1/users/validate-credentials')
+        .send({ email, password })
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .then((response) => {
+          expect(response.body.id).toBe(userId)
+          expect(response.body.firstName).toBe(userInputData.firstName)
+          expect(response.body.lastName).toBe(userInputData.lastName)
+          expect(response.body.email).toBe(email)
+        })
+    })
+
+    it('returns 401 when user does not exist', () => {
+      return request(app)
+        .post('/api/v1/users/validate-credentials')
+        .send({ email: 'incorrect@example.com', password })
+        .expect('Content-Type', /json/)
+        .expect(401)
+    })
+
+    it('returns 401 when password does not match', () => {
+      return request(app)
+        .post('/api/v1/users/validate-credentials')
+        .send({ email, password: 'incorrectPassword' })
+        .expect('Content-Type', /json/)
+        .expect(401)
+    })
   })
 
   describe('GET /:id', async () => {
