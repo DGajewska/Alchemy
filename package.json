@@ -10,6 +10,8 @@
     "lint": "npx eslint .",
     "lint-fix": "npx eslint . --fix",
     "prettier": "npx prettier --write .",
+    "migrate:dev": "dotenv -e .env.dev -- npx prisma migrate deploy",
+    "migrate:test": "dotenv -e .env.test -- npx prisma migrate deploy",
     "postinstall": "prisma generate"
   },
   "keywords": [],
